@@ -4,8 +4,6 @@ ayaka is a software renderer project that includes a rasterier, a raytracer and 
 
 ## ayaka rasterizer
 
-
-
 ## ayaka raytracer
 
 ## ayaka pathtracer

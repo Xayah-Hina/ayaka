@@ -11,14 +11,21 @@ find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIRS})
 # -------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------
+include_directories(
+		${PROJECT_SOURCE_DIR}/core
+		${PROJECT_SOURCE_DIR}/utils
+		)
 # -------------------------------------------------------------------------------
 file(GLOB AYAKA_SRC "core/*.h" "core/*.cpp")
-add_executable(ayaka_raytracer ${AYAKA_SRC} main.cpp)
-target_include_directories(ayaka_raytracer
-	PRIVATE
-	${PROJECT_SOURCE_DIR}/core
-	${ASSIMP_DIR}/include
-)
-target_link_libraries(ayaka_raytracer ${OpenCV_LIBRARIES})
+file(GLOB TEST_SRC "test/*.cpp")
+file(GLOB SAMPLES "samples/*.cpp")
+
+foreach (file ${SAMPLES})
+	get_filename_component(clippedfile ${file} NAME_WE)
+	message(${clippedfile})
+	add_executable(${clippedfile} ${AYAKA_SRC} ${file})
+	target_link_libraries(${clippedfile} ${OpenCV_LIBRARIES})
+endforeach (file ${FILES})
 # -------------------------------------------------------------------------------
-add_definitions(-DPROJECT_SOURCE_DIR=\"${PROJECT_SOURCE_DIR}\")
+add_definitions(-DPROJECT_SOURCE_DIR=\"${PROJECT_SOURCE_DIR}\"
+		-DOUTPUT_DIR=\"${PROJECT_SOURCE_DIR}/output\")
