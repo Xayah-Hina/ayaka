@@ -9,9 +9,9 @@ unsigned int height = 600;
 
 int main(int argc, char **argv)
 {
-    std::unique_ptr<ayakaras::TriangleModel> model = std::make_unique<ayakaras::TriangleModel>("cube.obj");
-
     ayakaras::Rasterizer rst(width, height);
 
-    rst.draw(*model);
+    std::unique_ptr<ayakaras::TriangleModel> model = std::make_unique<ayakaras::TriangleModel>("cube.obj");
+
+//    rst.draw(*model);
 }
