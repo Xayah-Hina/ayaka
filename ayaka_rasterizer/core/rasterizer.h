@@ -27,7 +27,7 @@ namespace ayakaras
     {
     public:
         Rasterizer(unsigned int width, unsigned int height, const Vector3f &CLEAR_COLOR = Vector3f(0.f, 0.f, 0.f));
-        void draw(const TriangleModel &m, Shader &vs, PRIMITIVE type = TRIANGLE) const;
+        void draw(const TriangleModel &m, Shader &vs, PRIMITIVE type = TRIANGLE);
         void clear(bool FRAMEBUFFER, bool DEPTHBUFFER);
     public:
         unsigned int width, height;
@@ -35,7 +35,7 @@ namespace ayakaras
         std::vector<Vector3f> frame_buffer;
         std::vector<float> depth_buffer;
     private:
-        void rasterize_triangle();
+        void rasterize_triangle(Triangle &t);
         void rasterize_wireframe();
     };
 }

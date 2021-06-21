@@ -19,6 +19,11 @@ Triangle::Triangle(const Particles &p, unsigned int a, unsigned int b, unsigned 
     uvs[2] = p.get_uvs()[c];
 }
 
+const Vector3f *Triangle::get_positions_projected() const
+{
+    return positions_projected;
+}
+
 const Vector3f *Triangle::get_positions() const
 {
     return positions;
@@ -47,6 +52,12 @@ const Vector3f *Triangle::get_bitangents() const
 const Vector3f *Triangle::get_colors() const
 {
     return colors;
+}
+
+void Triangle::set_position_projected(unsigned int i, Vector3f p)
+{
+    assert(i <= 3);
+    Triangle::positions_projected[i] = std::move(p);
 }
 
 void Triangle::set_position(unsigned int i, Vector3f p)

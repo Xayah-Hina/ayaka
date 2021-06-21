@@ -2,44 +2,58 @@
 #include "utils.h"
 #include <iostream>
 
-ayakaras::TriangleModel::TriangleModel(const std::string &filename)
+using namespace ayakaras;
+
+TriangleModel::TriangleModel(const std::string &filename)
 {
-    particles = std::make_unique<Particles>();
-    mesh = std::make_unique<TriangleFaceMesh>();
-
-    std::vector<Vector3f> positions;
-    std::vector<Vector3i> indices;
-    std::vector<Vector2f> uvs;
-
-    Utils::loadObj(filename, &positions, &indices, &uvs);
-
-    particles->set_positions(positions);
-    particles->set_uvs(uvs);
-    mesh->load_faces(indices);
-
     if (!setup(filename))
-    {
-        std::cerr << "Fail to load" << filename << std::endl;
-    }
+        std::cerr << "Fail to load " << filename << std::endl;
 }
 
-bool ayakaras::TriangleModel::setup(const std::string &filename)
+bool TriangleModel::setup(const std::string &filename)
 {
-    std::vector<Vector3f> vertices;
-    std::vector<Vector3i> indicies;
-    if (!Utils::loadObj(filename, &vertices, &indicies))
+    Particles p;
+    TriangleFaceMesh tfm;
+
+    std::vector<Vector3f> positions;
+    std::vector<Vector3f> normals;
+    std::vector<Vector3i> indices;
+    std::vector<Vector2f> uvs;
+    Material mat;
+
+    mat.diffuse = Texture("/Users/polaris/Desktop/tetwildsample/willowTreeBranch_v1_L2.123ceab7b7ac-6102-4fab-8f06-392a891b5ebd/12972_willowTreeBranch_diffuse.jpg");
+
+    if (!(Utils::loadObj(filename, &positions, &indices, &uvs, &normals)))
         return false;
-    this->particles->load_vertices(vertices);
-    this->mesh->load_faces(indicies);
+
+    p.set_positions(positions);
+    p.set_normals(normals);
+    p.set_uvs(uvs);
+    tfm.load_faces(indices);
+
+    particles.push_back(std::move(p));
+    meshes.push_back(std::move(tfm));
+    materials.push_back(std::move(mat));
     return true;
 }
 
-const ayakaras::Particles &ayakaras::TriangleModel::get_particles() const
+const std::vector<Particles> &TriangleModel::get_particles() const
 {
-    return *particles;
+    return particles;
 }
 
-const ayakaras::TriangleFaceMesh &ayakaras::TriangleModel::get_mesh() const
+const std::vector<TriangleFaceMesh> &TriangleModel::get_meshes() const
 {
-    return *mesh;
+    return meshes;
+}
+
+const std::vector<Material> &TriangleModel::get_materials() const
+{
+    return materials;
+}
+
+const unsigned int TriangleModel::get_meshsize() const
+{
+    assert(particles.size() == meshes.size());
+    return static_cast<unsigned int>(particles.size());
 }

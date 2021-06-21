@@ -14,7 +14,7 @@ namespace ayakaras
 
         const Vector3f &get_vertice(unsigned int i) const
         {
-            assert(i >= 0 && i < positions.size());
+            assert(i >= 1 && i <= positions.size());
             return positions[i];
         }
 
