@@ -15,15 +15,17 @@ namespace ayakaras
     public:
         Triangle(const Particles &p, unsigned int a, unsigned int b, unsigned int c);
 
-        const Vector3f *get_positions_projected() const;
-        const Vector3f *get_positions() const;
-        const Vector3f *get_normals() const;
-        const Vector2f *get_uvs() const;
-        const Vector3f *get_tangents() const;
-        const Vector3f *get_bitangents() const;
-        const Vector3f *get_colors() const;
+        [[nodiscard]] const Vector3f *get_positions_projected() const;
+        [[nodiscard]] const Vector3f *get_positions_viewed() const;
+        [[nodiscard]] const Vector3f *get_positions() const;
+        [[nodiscard]] const Vector3f *get_normals() const;
+        [[nodiscard]] const Vector2f *get_uvs() const;
+        [[nodiscard]] const Vector3f *get_tangents() const;
+        [[nodiscard]] const Vector3f *get_bitangents() const;
+        [[nodiscard]] const Vector3f *get_colors() const;
 
         void set_position_projected(unsigned int i, Vector3f p);
+        void set_position_viewed(unsigned int i, Vector3f p);
         void set_position(unsigned int i, Vector3f p);
         void set_normal(unsigned int i, Vector3f n);
         void set_uv(unsigned int i, Vector2f uv);
@@ -33,6 +35,7 @@ namespace ayakaras
 
     protected:
         Vector3f positions_projected[3];
+        Vector3f positions_viewed[3];
         Vector3f positions[3];
         Vector3f normals[3];
         Vector2f uvs[3];

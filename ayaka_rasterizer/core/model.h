@@ -21,10 +21,10 @@ namespace ayakaras
     {
     public:
         explicit TriangleModel(const std::string &filename);
-        const std::vector<Particles> &get_particles() const;
-        const std::vector<TriangleFaceMesh> &get_meshes() const;
-        const std::vector<Material> &get_materials() const;
-        const unsigned int get_meshsize() const;
+        [[nodiscard]] const std::vector<Particles> &get_particles() const;
+        [[nodiscard]] const std::vector<TriangleFaceMesh> &get_meshes() const;
+        [[nodiscard]] const std::vector<Material> &get_materials() const;
+        [[nodiscard]] const unsigned int get_meshsize() const;
     protected:
         std::vector<Particles> particles;
         std::vector<TriangleFaceMesh> meshes;

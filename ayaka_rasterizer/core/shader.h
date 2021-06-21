@@ -26,7 +26,7 @@ namespace ayakaras
             Vector3f specular;
         };
     public:
-        virtual bool shade_vertex(Triangle &t, std::vector<Vector3f> &frame_buf, std::vector<float> &depth_buf, unsigned int width, unsigned height);
+        virtual bool shade_vertex(Triangle &t, unsigned int width, unsigned height);
 
         virtual bool shade_fragment();
 

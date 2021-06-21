@@ -11,6 +11,12 @@ Triangle::Triangle(const Particles &p, unsigned int a, unsigned int b, unsigned 
     positions[0] = p.get_positions()[a];
     positions[1] = p.get_positions()[b];
     positions[2] = p.get_positions()[c];
+    positions_viewed[0] = p.get_positions()[a];
+    positions_viewed[1] = p.get_positions()[b];
+    positions_viewed[2] = p.get_positions()[c];
+    positions_projected[0] = p.get_positions()[a];
+    positions_projected[1] = p.get_positions()[b];
+    positions_projected[2] = p.get_positions()[c];
     normals[0] = p.get_normals()[a];
     normals[1] = p.get_normals()[b];
     normals[2] = p.get_normals()[c];
@@ -22,6 +28,11 @@ Triangle::Triangle(const Particles &p, unsigned int a, unsigned int b, unsigned 
 const Vector3f *Triangle::get_positions_projected() const
 {
     return positions_projected;
+}
+
+const Vector3f *Triangle::get_positions_viewed() const
+{
+    return positions_viewed;
 }
 
 const Vector3f *Triangle::get_positions() const
@@ -58,6 +69,12 @@ void Triangle::set_position_projected(unsigned int i, Vector3f p)
 {
     assert(i <= 3);
     Triangle::positions_projected[i] = std::move(p);
+}
+
+void Triangle::set_position_viewed(unsigned int i, Vector3f p)
+{
+    assert(i <= 3);
+    Triangle::positions_viewed[i] = std::move(p);
 }
 
 void Triangle::set_position(unsigned int i, Vector3f p)

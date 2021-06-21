@@ -35,8 +35,11 @@ namespace ayakaras
         std::vector<Vector3f> frame_buffer;
         std::vector<float> depth_buffer;
     private:
-        void rasterize_triangle(Triangle &t);
-        void rasterize_wireframe();
+        void rasterize_triangle(const Triangle &t);
+        void rasterize_wireframe(const Triangle &t);
+        void draw_line(Vector3f begin, Vector3f end);
+        void set_pixel(unsigned int x, unsigned int y, const Vector3f &color);
+        void set_depth(unsigned int x, unsigned int y, float depth);
     };
 }
 
