@@ -17,9 +17,10 @@ bool TriangleModel::setup(const std::string &filename)
 
     std::vector<Vector3f> positions;
     std::vector<Vector3f> normals;
-    std::vector<Vector3i> indices;
     std::vector<Vector2f> uvs;
     Material mat;
+
+    std::vector<Utils::MeshFaceIndices> indices;
 
     mat.diffuse = Texture("/Users/polaris/Desktop/tetwildsample/willowTreeBranch_v1_L2.123ceab7b7ac-6102-4fab-8f06-392a891b5ebd/12972_willowTreeBranch_diffuse.jpg");
 

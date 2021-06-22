@@ -6,7 +6,8 @@
 
 using namespace ayakaras;
 
-Triangle::Triangle(const Particles &p, unsigned int a, unsigned int b, unsigned int c, const Material *_mat)
+Triangle::Triangle(const Particles &p, unsigned int a, unsigned int b, unsigned int c, unsigned int ua, unsigned int ub, unsigned int uc, unsigned int na,
+                   unsigned int nb, unsigned int nc, const Material *_mat)
 {
     positions[0] = p.get_positions()[a];
     positions[1] = p.get_positions()[b];
@@ -17,12 +18,12 @@ Triangle::Triangle(const Particles &p, unsigned int a, unsigned int b, unsigned 
     positions_projected[0] = p.get_positions()[a];
     positions_projected[1] = p.get_positions()[b];
     positions_projected[2] = p.get_positions()[c];
-    normals[0] = p.get_normals()[a];
-    normals[1] = p.get_normals()[b];
-    normals[2] = p.get_normals()[c];
-    uvs[0] = p.get_uvs()[a];
-    uvs[1] = p.get_uvs()[b];
-    uvs[2] = p.get_uvs()[c];
+    uvs[0] = p.get_uvs()[ua];
+    uvs[1] = p.get_uvs()[ub];
+    uvs[2] = p.get_uvs()[uc];
+    normals[0] = p.get_normals()[na];
+    normals[1] = p.get_normals()[nb];
+    normals[2] = p.get_normals()[nc];
     mat = _mat;
 }
 
@@ -70,7 +71,6 @@ const Material *Triangle::get_mat() const
 {
     return mat;
 }
-
 
 void Triangle::set_position_projected(unsigned int i, Vector3f p)
 {

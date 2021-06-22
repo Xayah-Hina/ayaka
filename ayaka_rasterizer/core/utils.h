@@ -31,7 +31,7 @@ public:
         }
     }
 
-    static bool loadObj(const std::string &filename, std::vector<Vector3f> *positions, std::vector<Vector3i> *indices, std::vector<Vector2f> *uv = nullptr,
+    static bool loadObj(const std::string &filename, std::vector<Vector3f> *positions, std::vector<MeshFaceIndices> *indices, std::vector<Vector2f> *uv = nullptr,
                         std::vector<Vector3f> *normals = nullptr)
     {
         std::clog << "LOADING: " << filename << std::endl;
@@ -165,7 +165,7 @@ public:
                         faceIndex.posIndices[i] = stoi(f_buffer[i]);
                     }
                 }
-                indices->push_back(faceIndex.posIndices);
+                indices->push_back(std::move(faceIndex));
 
                 state = LOAD_FACE;
             } else if (type_str == "mtllib")

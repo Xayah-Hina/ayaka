@@ -55,15 +55,21 @@ void Rasterizer::draw(const TriangleModel &m, Shader &shader, const PRIMITIVE ty
     const Material &mat = m.get_materials()[0];
 
     TriangleFaceMesh::Faces faces = tm.get_faces();
+    TriangleFaceMesh::UVIndices uvis = tm.get_uvis();
+    TriangleFaceMesh::NormalIndices normalis = tm.get_normalis();
+
+    assert(faces.size() == uvis.size() && faces.size() == normalis.size());
+
     if (faces.size() % 3)
     {
         std::cerr << "RASTERIZING ERROR:: FACE NUM ERROR" << std::endl;
         return;
     }
+
     for (unsigned int i = 0; i < faces.size(); i += 3)
     {
 
-        Triangle tri(p, faces[i], faces[i + 1], faces[i + 2], &mat);
+        Triangle tri(p, faces[i], faces[i + 1], faces[i + 2], uvis[i], uvis[i + 1], uvis[i + 2], normalis[i], normalis[i + 1], normalis[i + 2], &mat);
 
         shader.shade_vertex(tri, Rasterizer::width, Rasterizer::height);
 
@@ -123,7 +129,8 @@ void Rasterizer::rasterize_triangle(const Triangle &t, Shader &shader)
                     const Vector2f &b_tex = t.get_uvs()[1];
                     const Vector2f &c_tex = t.get_uvs()[2];
 
-                    Vector3f pos_interpolated = z_interpolated_view * (alpha * a_position / a_view.z() + beta * b_position / b_view.z() + gamma * c_position / c_view.z());
+                    Vector3f pos_interpolated =
+                            z_interpolated_view * (alpha * a_position / a_view.z() + beta * b_position / b_view.z() + gamma * c_position / c_view.z());
                     Vector3f normal_interpolated = z_interpolated_view * (alpha * a_normal / a_view.z() + beta * b_normal / b_view.z() + gamma * c_normal / c_view.z());
                     Vector2f uv_interpolated = z_interpolated_view * (alpha * a_tex / a_view.z() + beta * b_tex / b_view.z() + gamma * c_tex / c_view.z());
 

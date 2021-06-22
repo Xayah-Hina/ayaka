@@ -14,7 +14,7 @@ namespace ayakaras
     class Triangle
     {
     public:
-        Triangle(const Particles &p, unsigned int a, unsigned int b, unsigned int c, const Material *_mat = nullptr);
+        Triangle(const Particles &p, unsigned int a, unsigned int b, unsigned int c, unsigned int ua, unsigned int ub, unsigned int uc, unsigned int na, unsigned int nb, unsigned int nc, const Material *_mat = nullptr);
 
         [[nodiscard]] const Vector3f *get_positions_projected() const;
         [[nodiscard]] const Vector3f *get_positions_viewed() const;
