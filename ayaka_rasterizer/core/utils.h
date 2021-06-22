@@ -54,6 +54,13 @@ public:
         std::vector<std::string> pos_buffer;
         std::vector<std::string> f_buffer;
 
+        enum STATE
+        {
+            LOAD_POSITION, LOAD_NORMAL, LOAD_TEXCOODS, LOAD_FACE
+        };
+
+        STATE state = LOAD_POSITION;
+
         while (getline(filestream, line_stream))
         {
             std::stringstream str_stream(line_stream);
@@ -62,6 +69,11 @@ public:
 
             if (type_str == "v")
             {
+                if (state == LOAD_FACE)
+                {
+
+                }
+
                 Vector3f pos;
                 pos_buffer.clear();
                 std::string parse_str = line_stream.substr(line_stream.find("v") + 1);
@@ -70,6 +82,8 @@ public:
                     pos[i] = stof(pos_buffer[i]);
 
                 positions->push_back(pos);
+
+                state = LOAD_POSITION;
             } else if (type_str == "vt")
             {
                 if (uv != nullptr)
@@ -84,6 +98,8 @@ public:
                     uv->push_back(tex);
                     vt = true;
                 }
+
+                state = LOAD_TEXCOODS;
             } else if (type_str == "vn")
             {
                 if (normals != nullptr)
@@ -98,6 +114,7 @@ public:
                     normals->push_back(nor);
                     vn = true;
                 }
+                state = LOAD_NORMAL;
             } else if (type_str == "f")
             {
                 MeshFaceIndices faceIndex;
@@ -149,6 +166,8 @@ public:
                     }
                 }
                 indices->push_back(faceIndex.posIndices);
+
+                state = LOAD_FACE;
             } else if (type_str == "mtllib")
             {
 

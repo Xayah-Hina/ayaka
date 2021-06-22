@@ -52,6 +52,7 @@ void Rasterizer::draw(const TriangleModel &m, Shader &shader, const PRIMITIVE ty
 {
     const Particles &p = m.get_particles()[0];
     const TriangleFaceMesh &tm = m.get_meshes()[0];
+    const Material &mat = m.get_materials()[0];
 
     TriangleFaceMesh::Faces faces = tm.get_faces();
     if (faces.size() % 3)
@@ -62,14 +63,14 @@ void Rasterizer::draw(const TriangleModel &m, Shader &shader, const PRIMITIVE ty
     for (unsigned int i = 0; i < faces.size(); i += 3)
     {
 
-        Triangle tri(p, faces[i], faces[i + 1], faces[i + 2]);
+        Triangle tri(p, faces[i], faces[i + 1], faces[i + 2], &mat);
 
         shader.shade_vertex(tri, Rasterizer::width, Rasterizer::height);
 
         if (type == LINE)
-            rasterize_wireframe(tri);
+            rasterize_wireframe(tri, shader);
         else if (type == TRIANGLE)
-            rasterize_triangle(tri);
+            rasterize_triangle(tri, shader);
     }
 }
 
@@ -81,7 +82,7 @@ void ayakaras::Rasterizer::clear(bool FRAMEBUFFER, bool DEPTHBUFFER)
         std::fill(this->depth_buffer.begin(), this->depth_buffer.end(), -std::numeric_limits<float>::infinity());
 }
 
-void Rasterizer::rasterize_triangle(const Triangle &t)
+void Rasterizer::rasterize_triangle(const Triangle &t, Shader &shader)
 {
     const Vector3f &a = t.get_positions_projected()[0];
     const Vector3f &b = t.get_positions_projected()[1];
@@ -112,7 +113,24 @@ void Rasterizer::rasterize_triangle(const Triangle &t)
                 float depth_interpolated = z_interpolated_view * (alpha * a.z() / a_view.z() + beta * b.z() / b_view.z() + gamma * c.z() / c_view.z());
                 if (depth_interpolated > depth_buffer[(height - 1 - j) * width + i])
                 {
-                    Vector3f color_interpolated{250, 250, 250};
+                    const Vector3f &a_position = t.get_positions()[0];
+                    const Vector3f &b_position = t.get_positions()[1];
+                    const Vector3f &c_position = t.get_positions()[2];
+                    const Vector3f &a_normal = t.get_normals()[0];
+                    const Vector3f &b_normal = t.get_normals()[1];
+                    const Vector3f &c_normal = t.get_normals()[2];
+                    const Vector2f &a_tex = t.get_uvs()[0];
+                    const Vector2f &b_tex = t.get_uvs()[1];
+                    const Vector2f &c_tex = t.get_uvs()[2];
+
+                    Vector3f pos_interpolated = z_interpolated_view * (alpha * a_position / a_view.z() + beta * b_position / b_view.z() + gamma * c_position / c_view.z());
+                    Vector3f normal_interpolated = z_interpolated_view * (alpha * a_normal / a_view.z() + beta * b_normal / b_view.z() + gamma * c_normal / c_view.z());
+                    Vector2f uv_interpolated = z_interpolated_view * (alpha * a_tex / a_view.z() + beta * b_tex / b_view.z() + gamma * c_tex / c_view.z());
+
+                    Vector3f color_interpolated = t.get_mat()->diffuse.getColor(uv_interpolated.x(), uv_interpolated.y());
+
+                    shader.shade_fragment(color_interpolated, pos_interpolated, normal_interpolated);
+
                     set_pixel(i, j, color_interpolated);
                     set_depth(i, j, depth_interpolated);
                 }
@@ -121,7 +139,7 @@ void Rasterizer::rasterize_triangle(const Triangle &t)
     }
 }
 
-void Rasterizer::rasterize_wireframe(const Triangle &t)
+void Rasterizer::rasterize_wireframe(const Triangle &t, Shader &shader)
 {
     const Vector3f &a = t.get_positions_projected()[0];
     const Vector3f &b = t.get_positions_projected()[1];

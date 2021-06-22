@@ -2,6 +2,7 @@
 #define AYAKA_RASTERIZER_TRIANGLE_H
 
 #include "particles.h"
+#include "material.h"
 
 #include <Eigen/Eigen>
 #include <vector>
@@ -13,7 +14,7 @@ namespace ayakaras
     class Triangle
     {
     public:
-        Triangle(const Particles &p, unsigned int a, unsigned int b, unsigned int c);
+        Triangle(const Particles &p, unsigned int a, unsigned int b, unsigned int c, const Material *_mat = nullptr);
 
         [[nodiscard]] const Vector3f *get_positions_projected() const;
         [[nodiscard]] const Vector3f *get_positions_viewed() const;
@@ -23,6 +24,7 @@ namespace ayakaras
         [[nodiscard]] const Vector3f *get_tangents() const;
         [[nodiscard]] const Vector3f *get_bitangents() const;
         [[nodiscard]] const Vector3f *get_colors() const;
+        [[nodiscard]] const Material *get_mat() const;
 
         void set_position_projected(unsigned int i, Vector3f p);
         void set_position_viewed(unsigned int i, Vector3f p);
@@ -42,6 +44,7 @@ namespace ayakaras
         Vector3f tangents[3];
         Vector3f bitangents[3];
         Vector3f colors[3];
+        const Material *mat;
     };
 }
 

@@ -6,7 +6,7 @@
 
 using namespace ayakaras;
 
-Triangle::Triangle(const Particles &p, unsigned int a, unsigned int b, unsigned int c)
+Triangle::Triangle(const Particles &p, unsigned int a, unsigned int b, unsigned int c, const Material *_mat)
 {
     positions[0] = p.get_positions()[a];
     positions[1] = p.get_positions()[b];
@@ -23,6 +23,7 @@ Triangle::Triangle(const Particles &p, unsigned int a, unsigned int b, unsigned 
     uvs[0] = p.get_uvs()[a];
     uvs[1] = p.get_uvs()[b];
     uvs[2] = p.get_uvs()[c];
+    mat = _mat;
 }
 
 const Vector3f *Triangle::get_positions_projected() const
@@ -64,6 +65,12 @@ const Vector3f *Triangle::get_colors() const
 {
     return colors;
 }
+
+const Material *Triangle::get_mat() const
+{
+    return mat;
+}
+
 
 void Triangle::set_position_projected(unsigned int i, Vector3f p)
 {

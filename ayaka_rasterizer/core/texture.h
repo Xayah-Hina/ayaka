@@ -13,7 +13,7 @@ namespace ayakaras
 
         explicit Texture(const std::string &name);
 
-        Eigen::Vector3f getColor(float u, float v);
+        const Eigen::Vector3f getColor(float u, float v) const;
 
     private:
         bool inited;

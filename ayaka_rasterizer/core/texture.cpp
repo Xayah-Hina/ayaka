@@ -18,7 +18,7 @@ Texture::Texture(const std::string &name)
     inited = true;
 }
 
-Eigen::Vector3f Texture::getColor(float u, float v)
+const Eigen::Vector3f Texture::getColor(float u, float v) const
 {
     auto u_img = u * width;
     auto v_img = (1 - v) * height;

@@ -35,7 +35,7 @@ bool Shader::shade_vertex(Triangle &t, unsigned int width, unsigned int height)
     return true;
 }
 
-bool Shader::shade_fragment()
+bool Shader::shade_fragment(Vector3f &color, Vector3f position, Vector3f normal)
 {
     return true;
 }

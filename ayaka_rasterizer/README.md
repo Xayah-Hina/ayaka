@@ -3,14 +3,8 @@
 ## keypoints
 
 - Perspective Correct Interpolation [1]
-
-
-
-
-
-
-
-
+- Why should we inverse and transpose Normal Matrix?
+- parse obj file with mtl
 
 ## Bibliography
 

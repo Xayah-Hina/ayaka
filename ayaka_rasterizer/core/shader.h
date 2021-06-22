@@ -28,7 +28,7 @@ namespace ayakaras
     public:
         virtual bool shade_vertex(Triangle &t, unsigned int width, unsigned height);
 
-        virtual bool shade_fragment();
+        virtual bool shade_fragment(Vector3f &color, Vector3f position, Vector3f normal);
 
         virtual void set_mvp(Matrix4f m, Matrix4f v, Matrix4f p) final
         {

@@ -4,19 +4,12 @@
 #include "particles.h"
 #include "mesh.h"
 #include "shader.h"
-#include "texture.h"
+#include "material.h"
 
 #include <vector>
 
 namespace ayakaras
 {
-    struct Material
-    {
-        Texture diffuse;
-        Texture specular;
-        float shininess{};
-    };
-
     class TriangleModel
     {
     public:
