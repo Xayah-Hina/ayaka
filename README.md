@@ -1,9 +1,23 @@
 # ayaka software renderer
 
-ayaka is a software renderer project that includes a rasterier, a raytracer and a pathtracer, with least dependencies.
+ayaka is a software renderer project that includes a rasterizer, a raytracer and a pathtracer, with least dependencies.
 
-## ayaka rasterizer
+## ayakaras
 
-## ayaka raytracer
+ayakaras is a simple software rasterizer, imitating OpenGL graphics rendering pipeline.
 
-## ayaka pathtracer
+### Feature
+
+- real-time rendering.
+- support free movement (on dev).
+- support perspective correct interpolation.
+- support user-defined vertex shader & fragment shader (geometry shader on dev).
+- support deffered renderring (on dev).
+
+### Dependencies
+
+- [OpenCV](https://opencv.org)
+
+## ayakaray
+
+comming soon ...
