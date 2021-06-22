@@ -26,7 +26,7 @@ namespace ayakaras
     class Rasterizer
     {
     public:
-        Rasterizer(unsigned int width, unsigned int height, const Vector3f &CLEAR_COLOR = Vector3f(0.f, 0.f, 0.f));
+        Rasterizer(unsigned int width, unsigned int height, const Vector3f &CLEAR_COLOR = Vector3f{253.f, 237.f, 228.f});
         void draw(const TriangleModel &m, Shader &vs, PRIMITIVE type = TRIANGLE);
         void clear(bool FRAMEBUFFER, bool DEPTHBUFFER);
     public:
