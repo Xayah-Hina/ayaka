@@ -18,6 +18,13 @@ ayakaras is a simple software rasterizer, imitating OpenGL graphics rendering pi
 
 - [OpenCV](https://opencv.org)
 
+### samples
+
+**sample 1:** ayaka & ganyu
+
+<img src="./ayaka_rasterizer/output/ayaka_shading.gif" alt="ayaka" style="width:500px;" />
+<img src="./ayaka_rasterizer/output/ganyu.gif" alt="ganyu" style="width:500px;" />
+
 ## ayakaray
 
 comming soon ...
