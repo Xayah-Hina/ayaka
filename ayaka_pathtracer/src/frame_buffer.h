@@ -47,10 +47,4 @@ template<typename Vector>
 void *FrameBufferT<Vector>::data()
 { return static_cast<void *>(_buffer.data()); }
 
-template<typename Vector>
-void for_each_FB(FrameBufferT<Vector> FB)
-{
-    // TODO: create utility functions
-}
-
 #endif //AYAKAPATHTRACER_FRAME_BUFFER_H

@@ -11,7 +11,7 @@ using Ray = RayT<Vector3>;
 using FrameBuffer = FrameBufferT<Vector3>;
 using hit_record = hit_recordT<Vector3>;
 using Shape = ShapeT<Vector3>;
-using World = WorldT<Shape>;
+using World = WorldT<Shape, Ray, hit_record>;
 
 static Ray ray_at_pixel(const FrameBuffer &frame, const Vector3 &orig, int row, int col)
 {
@@ -25,51 +25,36 @@ static Ray ray_at_pixel(const FrameBuffer &frame, const Vector3 &orig, int row, 
     return {orig, dir};
 }
 
-static Vector3 get_color(const Ray &ray)
+static void render_world_to_frame(FrameBuffer &FB, const World &world)
 {
-    Vector3 dir = ray._dir.normalized();
-    auto t = 0.5f * dir.y() + 1.0f;
-    return (1.0f - t) * Vector3(1.0f, 1.0f, 1.0f) + t * Vector3(0.5f, 0.7f, 1.0f);
-}
-
-int main(int argc, char **argv)
-{
-    int width = 800;
-    int height = 800;
-    FrameBuffer FB(width, height);
-    FB.set_clear_color({1.0f, 1.0f, 1.0f});
-    FB.clear();
-
-    World world;
-    world.add_shape(std::make_shared<SphereT<Vector3>>(Vector3(0, 0, -5), 0.5f));
-    world.add_shape(std::make_shared<SphereT<Vector3>>(Vector3(0, 0.4, -5), 0.3f));
-
-    for (int i = 0; i < width; ++i)
-        for (int j = 0; j < height; ++j)
+    for (int row = 0; row < FB._height; ++row)
+        for (int col = 0; col < FB._width; ++col)
         {
-            std::optional<hit_record> opt = std::nullopt;
-            auto closest_so_far = std::numeric_limits<float>::max();
-            for (const auto &pair: world._shapes)
-            {
-                auto s = pair.second;
-                auto r = ray_at_pixel(FB, Vector3(0, 0, 10), j, i);
-                auto res = s->intersect(r._orig, r._dir, 0.1f, closest_so_far);
-                if (res.has_value())
-                {
-                    closest_so_far = res.value().t;
-                    opt = res;
-                }
-            }
+            auto r = ray_at_pixel(FB, Vector3(0, 0, 10), row, col);
+            std::optional<hit_record> opt = world.intersect(r);
 
             if (opt.has_value())
             {
                 auto hr = opt.value();
                 auto n = hr.normal;
-                auto c = 0.5f * Vector3(n.x() + 1.0f, n.y() + 1.0f, n.z() + 1.0f);
-                FB.set_pixel(j, i, c);
+                Vector3 c = 0.5f * Vector3(n.x() + 1.0f, n.y() + 1.0f, n.z() + 1.0f);
+                FB.set_pixel(row, col, c);
             } else
-                FB.set_pixel(j, i, {1.0f, 1.0f, 1.0f});
+                FB.set_pixel(row, col, {1.0f, 1.0f, 1.0f});
         }
+}
 
+int main(int argc, char **argv)
+{
+    World world;
+    world.add_shape(std::make_shared<SphereT<Vector3>>(Vector3(0.0f, 0.0f, -5), 0.5f));
+    world.add_shape(std::make_shared<SphereT<Vector3>>(Vector3(0.0f, 0.4f, -5), 0.3f));
+
+    int width = 800;
+    int height = 800;
+    FrameBuffer FB(width, height);
+    FB.set_clear_color({1.0f, 1.0f, 1.0f});
+    FB.clear();
+    render_world_to_frame(FB, world);
     Viewer::display_one_frame(FB.data(), FB._width, FB._height);
 }
