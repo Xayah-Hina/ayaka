@@ -6,7 +6,7 @@
 template<typename Vector>
 struct FrameBufferT
 {
-    FrameBufferT(int width, int height);
+    FrameBufferT(int _width, int _height);
     void resize(int _width, int _height);
     void set_clear_color(const Vector &color);
     void set_pixel(int row, int col, const Vector &color);
@@ -20,16 +20,16 @@ struct FrameBufferT
 };
 
 template<typename Vector>
+FrameBufferT<Vector>::FrameBufferT(int _width, int _height):width(_width), height(_height)
+{ buffer.resize(width * height); }
+
+template<typename Vector>
 void FrameBufferT<Vector>::resize(int _width, int _height)
 {
     this->width = _width;
     this->height = _height;
     buffer.resize(width * height);
 }
-
-template<typename Vector>
-FrameBufferT<Vector>::FrameBufferT(int width, int height):width(width), height(height)
-{ buffer.resize(width * height); }
 
 template<typename Vector>
 void FrameBufferT<Vector>::set_clear_color(const Vector &color)

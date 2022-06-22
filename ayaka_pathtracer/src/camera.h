@@ -1,0 +1,9 @@
+#ifndef AYAKAPATHTRACER_CAMERA_H
+#define AYAKAPATHTRACER_CAMERA_H
+
+struct Camera
+{
+    // TODO
+};
+
+#endif //AYAKAPATHTRACER_CAMERA_H
