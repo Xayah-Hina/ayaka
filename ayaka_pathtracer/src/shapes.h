@@ -11,50 +11,60 @@
  */
 
 template<typename Vector3>
-struct hit_record
+struct hit_recordT
 {
     Vector3 p;
     Vector3 normal;
     float t;
+    bool front_face;
 };
 
 template<typename Vector3>
 struct ShapeT
 {
-    virtual std::optional<hit_record<Vector3>> intersect(const Vector3 &orig, const Vector3 &dir, float t_min, float t_max) = 0;
+    virtual std::optional<hit_recordT<Vector3>> intersect(const Vector3 &orig, const Vector3 &dir, float t_min, float t_max) = 0;
 };
 
 template<typename Vector3>
 struct SphereT : public ShapeT<Vector3>
 {
-    SphereT(const Vector3 &_center, float _radius);
-    std::optional<hit_record<Vector3>> intersect(const Vector3 &orig, const Vector3 &dir, float t_min, float t_max) override;
+    SphereT(const Vector3 &center, float radius);
+    std::optional<hit_recordT<Vector3>> intersect(const Vector3 &orig, const Vector3 &dir, float t_min, float t_max) override;
 
-    Vector3 center;
-    float radius;
+    Vector3 _center;
+    float _radius;
 };
 
 template<typename Vector3>
-SphereT<Vector3>::SphereT(const Vector3 &_center, float _radius) : center(_center), radius(_radius)
+SphereT<Vector3>::SphereT(const Vector3 &center, float radius) : _center(center), _radius(radius)
 {}
 
 template<typename Vector3>
-std::optional<hit_record<Vector3>> SphereT<Vector3>::intersect(const Vector3 &orig, const Vector3 &dir, float t_min, float t_max)
+std::optional<hit_recordT<Vector3>> SphereT<Vector3>::intersect(const Vector3 &orig, const Vector3 &dir, float t_min, float t_max)
 {
-    Vector3 oc = orig - center;
+    Vector3 oc = orig - _center;
     auto a = 1;
     auto hb = oc.dot(dir);
-    auto c = oc.dot(oc) - radius * radius;
+    auto c = oc.dot(oc) - _radius * _radius;
     auto discriminant = hb * hb - a * c;
 
     if (discriminant < 0)
         return std::nullopt;
 
     auto t = -hb - std::sqrt(discriminant);
-    auto p = orig + dir * t;
-    auto n = (p - center).normalized();
 
-    return {{p, n, t}};
+    if (t < t_min || t > t_max)
+        return std::nullopt;
+
+    auto p = orig + dir * t;
+    auto n = (p - _center).normalized();
+
+    if (dir.dot(n) < 0)
+        return {{p, n, t, true}};
+
+    n = -n;
+    return {{p, n, t, false}};
+
 }
 
 #endif //AYAKAPATHTRACER_SHAPES_H

@@ -6,29 +6,29 @@
 template<typename Vector>
 struct FrameBufferT
 {
-    FrameBufferT(int _width, int _height);
-    void resize(int _width, int _height);
+    FrameBufferT(int width, int height);
+    void resize(int width, int height);
     void set_clear_color(const Vector &color);
     void set_pixel(int row, int col, const Vector &color);
     void clear();
     void *data();
 
-    std::vector<Vector> buffer;
+    std::vector<Vector> _buffer;
     Vector CLEAR_COLOR;
-    int width;
-    int height;
+    int _width;
+    int _height;
 };
 
 template<typename Vector>
-FrameBufferT<Vector>::FrameBufferT(int _width, int _height):width(_width), height(_height)
-{ buffer.resize(width * height); }
+FrameBufferT<Vector>::FrameBufferT(int width, int height):_width(width), _height(height)
+{ _buffer.resize(_width * _height); }
 
 template<typename Vector>
-void FrameBufferT<Vector>::resize(int _width, int _height)
+void FrameBufferT<Vector>::resize(int width, int height)
 {
-    this->width = _width;
-    this->height = _height;
-    buffer.resize(width * height);
+    this->_width = width;
+    this->_height = height;
+    _buffer.resize(_width * _height);
 }
 
 template<typename Vector>
@@ -37,15 +37,15 @@ void FrameBufferT<Vector>::set_clear_color(const Vector &color)
 
 template<typename Vector>
 void FrameBufferT<Vector>::set_pixel(int row, int col, const Vector &color)
-{ buffer[row * width + col] = color; }
+{ _buffer[row * _width + col] = color; }
 
 template<typename Vector>
 void FrameBufferT<Vector>::clear()
-{ std::fill(buffer.begin(), buffer.end(), CLEAR_COLOR); }
+{ std::fill(_buffer.begin(), _buffer.end(), CLEAR_COLOR); }
 
 template<typename Vector>
 void *FrameBufferT<Vector>::data()
-{ return static_cast<void *>(buffer.data()); }
+{ return static_cast<void *>(_buffer.data()); }
 
 template<typename Vector>
 void for_each_FB(FrameBufferT<Vector> FB)
