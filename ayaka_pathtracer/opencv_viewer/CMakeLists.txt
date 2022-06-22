@@ -1,0 +1,5 @@
+find_package(OpenCV REQUIRED)
+file(GLOB_RECURSE OPENCV_VIEWER_SRC "*.h" "*.cpp")
+add_library(ViewerOpenCV ${OPENCV_VIEWER_SRC})
+target_include_directories(ViewerOpenCV PRIVATE ${OPENCV_INCLUDE_DIRS})
+target_link_libraries(ViewerOpenCV PRIVATE ${OpenCV_LIBS})
