@@ -10,6 +10,7 @@ struct FrameBufferT
     void resize(int width, int height);
     void set_clear_color(const Vector &color);
     void set_pixel(int row, int col, const Vector &color);
+    void gamma_correct(float gamma);
     void clear();
     void *data();
 
@@ -38,6 +39,17 @@ void FrameBufferT<Vector>::set_clear_color(const Vector &color)
 template<typename Vector>
 void FrameBufferT<Vector>::set_pixel(int row, int col, const Vector &color)
 { _buffer[row * _width + col] = color; }
+
+template<typename Vector>
+void FrameBufferT<Vector>::gamma_correct(float gamma)
+{
+    for (auto &c : _buffer)
+    {
+        c.x() = std::pow(c.x(), gamma);
+        c.y() = std::pow(c.y(), gamma);
+        c.z() = std::pow(c.z(), gamma);
+    }
+}
 
 template<typename Vector>
 void FrameBufferT<Vector>::clear()

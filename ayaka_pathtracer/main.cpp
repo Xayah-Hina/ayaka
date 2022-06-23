@@ -11,8 +11,6 @@
 #include <fstream>
 #include <cmath>
 
-std::fstream out("C:/Users/Administrator/Desktop/1.txt");
-
 using Vector3 = Eigen::Vector3f;
 using Ray = RayT<Vector3>;
 using FrameBuffer = FrameBufferT<Vector3>;
@@ -29,22 +27,6 @@ void clamp(T &src, T min, T max)
     else if (src > max)
         src = max;
 }
-
-//static Vector3 random_vec3(float low_bound, float high_bound)
-//{
-//    return {Random::random_f(low_bound, high_bound), Random::random_f(low_bound, high_bound), Random::random_f(low_bound, high_bound)};
-//};
-//
-//static Vector3 random_in_unit_sphere()
-//{
-//    while (true)
-//    {
-//        auto p = random_vec3(-1, 1);
-//        if (p.squaredNorm() >= 1)
-//            continue;
-//        return p;
-//    }
-//}
 
 Vector3 random_in_unit_sphere()
 {
@@ -68,7 +50,7 @@ static Ray ray_at_pixel(const FrameBuffer &frame, const Vector3 &orig, int row, 
 
 static Vector3 ray_color(const Ray &ray, const World &world, int depth)
 {
-    if (depth > 4)
+    if (depth < 0)
         return {0.0f, 0.0f, 0.0f};
 
     std::optional<hit_record> opt = world.intersect(ray);
@@ -80,18 +62,17 @@ static Vector3 ray_color(const Ray &ray, const World &world, int depth)
         auto t = hr.t;
         auto front_face = hr.front_face;
 
-        Vector3 target = p + n + random_in_unit_sphere();
+        Vector3 target = p + n + random_in_unit_sphere().normalized(); // use true Lambertian Reflection
 
 //        return 0.5f * Vector3(n.x() + 1.0f, n.y() + 1.0f, n.z() + 1.0f);
         Ray scattered{p, (target - p).normalized()};
-        return 0.5 * ray_color(scattered, world, depth + 1);
+        return 0.5 * ray_color(scattered, world, depth - 1);
     } else
-//    {
-//        auto d = ray._dir;
-//        auto t = 0.5f * (d.y() + 1.0f);
-//        return (1.0f - t) * Vector3(1.0f, 1.0f, 1.0f) + t * Vector3(0.5f, 0.7f, 1.0f);
-//    }
-        return {1.0f, 1.0f, 1.0f};
+    {
+        auto d = ray._dir;
+        auto t = 0.5f * (d.y() + 1.0f);
+        return (1.0f - t) * Vector3(1.0f, 1.0f, 1.0f) + t * Vector3(0.5f, 0.7f, 1.0f);
+    }
 }
 
 static void render_world_to_frame(FrameBuffer &FB, const World &world)
@@ -104,7 +85,7 @@ static void render_world_to_frame(FrameBuffer &FB, const World &world)
             Vector3 color = Vector3(0, 0, 0);
 
             for (int i = 0; i < MSAA; ++i)
-                color += ray_color(ray_at_pixel(FB, Vector3(0, 1, 10), row, col), world, 0);
+                color += ray_color(ray_at_pixel(FB, Vector3(0, 1, 10), row, col), world, 5);
             color /= static_cast<float>(MSAA);
             FB.set_pixel(row, col, color);
         }
@@ -122,7 +103,6 @@ int main(int argc, char **argv)
     FB.set_clear_color({1.0f, 1.0f, 1.0f});
     FB.clear();
     render_world_to_frame(FB, world);
+    FB.gamma_correct(0.5f);
     Viewer::display_one_frame(FB.data(), FB._width, FB._height);
-
-    out.close();
 }
