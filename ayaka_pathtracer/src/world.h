@@ -39,7 +39,7 @@ std::optional<hit_record> WorldT<Shape, Ray, hit_record>::intersect(const Ray &r
     for (const auto &pair: _shapes)
     {
         std::shared_ptr<Shape> s = pair.second;
-        std::optional<hit_record> res = s->intersect(r._orig, r._dir, 0.1f, closest_so_far);
+        std::optional<hit_record> res = s->intersect(r._orig, r._dir, 0.0f, closest_so_far);
         if (res.has_value())
         {
             closest_so_far = res.value().t;
