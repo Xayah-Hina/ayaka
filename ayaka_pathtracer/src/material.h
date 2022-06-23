@@ -72,7 +72,7 @@ template<typename Vector3, typename Ray>
 bool MetalT<Vector3, Ray>::scatter(const Ray &r_in, const Vector3 &hit_point, const Vector3 &hit_normal, Vector3 &attenuation, Ray &scattered) const
 {
     Vector3 reflected = reflect(r_in._dir.normalized(), hit_normal.normalized());
-    scattered = Ray(hit_point, reflected);
+    scattered = Ray(hit_point, reflected + _fuzz * random_in_unit_sphere<Vector3>());
     attenuation = _albedo;
     return scattered._dir.dot(hit_normal) > 0.0f;
 }

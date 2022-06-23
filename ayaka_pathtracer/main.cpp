@@ -10,7 +10,6 @@
 #include "src/material.h"
 
 #include <fstream>
-#include <cmath>
 
 using Vector3 = Eigen::Vector3f;
 using Camera = CameraT<Vector3>;
@@ -67,12 +66,8 @@ static Vector3 ray_color(const Ray &ray, const World &world, int depth)
         Ray scattered{Vector3::Zero(), Vector3::Zero()};
         Vector3 attenuation{1.0f, 1.0f, 1.0f};
         if (mat_ptr->scatter(ray, p, n, attenuation, scattered))
-        {
-            Vector3 res = ray_color(scattered, world, depth - 1);
-            return attenuation.cwiseProduct(res);
-        }
+            return attenuation.cwiseProduct(ray_color(scattered, world, depth - 1));
         return {0.0f, 0.0f, 0.0f};
-
     } else
     {
         auto d = ray._dir;
@@ -83,13 +78,12 @@ static Vector3 ray_color(const Ray &ray, const World &world, int depth)
 
 static void render_world_to_frame(FrameBuffer &FB, const World &world)
 {
-    int MSAA = 10;
+    int MSAA = 30;
 
     for (int row = 0; row < FB._height; ++row)
         for (int col = 0; col < FB._width; ++col)
         {
-            Vector3 color = Vector3(0, 0, 0);
-
+            Vector3 color{0, 0, 0};
             for (int i = 0; i < MSAA; ++i)
                 color += ray_color(ray_at_pixel(FB, Vector3(0, 1, 10), row, col), world, 5);
             color /= static_cast<float>(MSAA);
@@ -102,11 +96,12 @@ int main(int argc, char **argv)
     World world;
 
     {
-        auto lambertian = std::make_shared<LambertianT<Vector3, Ray>>(Vector3(0.8f, 0.3f, 0.3f));
+        auto lambertian = std::make_shared<LambertianT<Vector3, Ray>>(Vector3(0.9f, 0.6f, 0.7f));
+        auto metal = std::make_shared<MetalT<Vector3, Ray>>(Vector3(0.8f, 0.8f, 0.8f), 0.3f);
         auto sphere1 = std::make_shared<SphereT<Vector3, Material>>(Vector3(0.0f, 0.0f, -1), 0.5f);
         auto sphere2 = std::make_shared<SphereT<Vector3, Material>>(Vector3(0, -100.5, -1), 100.0f);
         sphere1->_mat_ptr = lambertian;
-        sphere2->_mat_ptr = lambertian;
+        sphere2->_mat_ptr = metal;
         world.add_shape(sphere1);
         world.add_shape(sphere2);
     }
