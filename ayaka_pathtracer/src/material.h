@@ -22,6 +22,15 @@ Vector3 reflect(const Vector3 &v, const Vector3 &n)
     return v - 2.0f * v.dot(n) * n;
 }
 
+template<typename Vector3>
+Vector3 refract(const Vector3 &uv, const Vector3 &n, float eta)
+{
+    auto cos_theta = std::min({-uv.dot(n), 1.0f});
+    Vector3 r_out_perp = eta * (uv + cos_theta * n);
+    Vector3 r_out_parallel = -std::sqrt(std::abs(1.f - r_out_perp.dot(r_out_perp))) * n;
+    return r_out_perp + r_out_parallel;
+}
+
 template<typename Vector3, typename Ray>
 struct MaterialT
 {
@@ -76,5 +85,31 @@ bool MetalT<Vector3, Ray>::scatter(const Ray &r_in, const Vector3 &hit_point, co
     attenuation = _albedo;
     return scattered._dir.dot(hit_normal) > 0.0f;
 }
+
+template<typename Vector3, typename Ray>
+struct DielectricT : public MaterialT<Vector3, Ray>
+{
+    explicit DielectricT(float ref_idx);
+    bool scatter(const Ray &r_in, const Vector3 &hit_point, const Vector3 &hit_normal, Vector3 &attenuation, Ray &scattered) const override;
+
+    float _ref_idx; // Index of Refraction, known as ir
+};
+
+template<typename Vector3, typename Ray>
+DielectricT<Vector3, Ray>::DielectricT(float ref_idx) : _ref_idx(ref_idx)
+{}
+
+template<typename Vector3, typename Ray>
+bool DielectricT<Vector3, Ray>::scatter(const Ray &r_in, const Vector3 &hit_point, const Vector3 &hit_normal, Vector3 &attenuation, Ray &scattered) const
+{
+    // TODO: To be implemented
+
+    attenuation = Vector3(1.0f, 1.0f, 1.0f);
+    double refraction_ratio = _ref_idx; // TODO: enable outward facing ray
+    Vector3 reflected = refract(r_in._dir.normalized(), hit_normal.normalized(), refraction_ratio);
+    scattered = Ray(hit_point, reflected);
+    return true;
+}
+
 
 #endif //AYAKAPATHTRACER_MATERIAL_H
